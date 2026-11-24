@@ -20,6 +20,10 @@ export class SaleQueryDto extends PageQueryDto {
   cashierId?: string;
 
   @IsOptional()
+  @IsUUID()
+  productId?: string;
+
+  @IsOptional()
   @IsString()
   search?: string;
 
@@ -38,6 +42,7 @@ export function saleWhere(query: SaleQueryDto): Prisma.SaleWhereInput {
     ...(query.status ? { status: query.status } : {}),
     ...(query.paymentMethod ? { paymentMethod: query.paymentMethod } : {}),
     ...(query.cashierId ? { cashierId: query.cashierId } : {}),
+    ...(query.productId ? { items: { some: { productId: query.productId } } } : {}),
     ...(query.search
       ? { receiptNumber: { contains: query.search, mode: 'insensitive' } }
       : {}),

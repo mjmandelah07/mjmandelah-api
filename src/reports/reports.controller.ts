@@ -2,13 +2,19 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthUser, CurrentUser } from '../common/auth-user';
 import { MANAGERS, Roles } from '../common/roles';
-import { ReportQueryDto, ReportsService } from './reports.service';
+import { AnalyticsQueryDto, ReportQueryDto, ReportsService } from './reports.service';
 
 @ApiTags('reports')
 @ApiBearerAuth()
 @Controller('reports')
 export class ReportsController {
   constructor(private readonly reports: ReportsService) {}
+
+  @Roles(...MANAGERS)
+  @Get('analytics')
+  analytics(@Query() query: AnalyticsQueryDto) {
+    return this.reports.analytics(query);
+  }
 
   @Roles(...MANAGERS)
   @Get('overview')
