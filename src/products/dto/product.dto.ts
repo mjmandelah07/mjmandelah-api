@@ -23,11 +23,6 @@ export class CreateProductDto {
   @IsOptional()
   @Transform(emptyToUndefined)
   @IsString()
-  sku?: string;
-
-  @IsOptional()
-  @Transform(emptyToUndefined)
-  @IsString()
   barcode?: string;
 
   @IsOptional()
@@ -84,11 +79,6 @@ export class UpdateProductDto {
   @IsString()
   @MinLength(2)
   name?: string;
-
-  @IsOptional()
-  @Transform(emptyToUndefined)
-  @IsString()
-  sku?: string;
 
   @IsOptional()
   @Transform(emptyToUndefined)

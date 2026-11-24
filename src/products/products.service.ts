@@ -47,7 +47,7 @@ export class ProductsService {
       if (receipt) {
         uploadedReceipt = await this.cloudinary.uploadImage(receipt, 'intake-receipts');
       }
-      const sku = await this.resolveSku(dto.sku, dto.name);
+      const sku = await this.resolveSku(dto.name);
       const product = await this.prisma.$transaction(async (tx) => {
         const created = await tx.product.create({
           data: {
@@ -173,7 +173,6 @@ export class ProductsService {
         where: { id },
         data: {
           name: dto.name?.trim(),
-          sku: dto.sku?.trim(),
           barcode: dto.barcode === undefined ? undefined : dto.barcode,
           description: dto.description === undefined ? undefined : dto.description.trim() || null,
           categoryId: dto.categoryId,
@@ -273,8 +272,7 @@ export class ProductsService {
     if (!category) throw new NotFoundException('Category not found');
   }
 
-  private async resolveSku(requested: string | undefined, name: string) {
-    if (requested?.trim()) return requested.trim();
+  private async resolveSku(name: string) {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       const sku = makeSku(name);
       const exists = await this.prisma.product.findUnique({ where: { sku } });

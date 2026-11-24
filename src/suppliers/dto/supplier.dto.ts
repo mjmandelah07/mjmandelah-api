@@ -1,4 +1,12 @@
-import { IsBoolean, IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsBoolean, IsEmail, IsOptional, IsString, MinLength, ValidateIf } from 'class-validator';
+
+function emptyToNull({ value }: { value: unknown }) {
+  if (value === undefined) return undefined;
+  if (value === null) return null;
+  const trimmed = String(value).trim();
+  return trimmed.length ? trimmed : null;
+}
 
 export class CreateSupplierDto {
   @IsString()
@@ -33,8 +41,10 @@ export class UpdateSupplierDto {
   phone?: string;
 
   @IsOptional()
+  @Transform(emptyToNull)
+  @ValidateIf((_, value) => value !== null)
   @IsEmail()
-  email?: string;
+  email?: string | null;
 
   @IsOptional()
   @IsString()

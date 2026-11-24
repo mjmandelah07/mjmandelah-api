@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import { Transform } from 'class-transformer';
 import { IsBoolean, IsOptional } from 'class-validator';
 import { pageOf, paging, PageQueryDto } from '../common/page';
 import { PrismaService } from '../prisma/prisma.service';
@@ -10,6 +11,7 @@ class SupplierQuery extends PageQueryDto {
   search?: string;
 
   @IsOptional()
+  @Transform(({ value }) => value === true || value === 'true')
   @IsBoolean()
   includeInactive?: boolean;
 }
@@ -57,7 +59,7 @@ export class SuppliersService {
       data: {
         name: dto.name?.trim(),
         phone: dto.phone === undefined ? undefined : dto.phone.trim() || null,
-        email: dto.email === undefined ? undefined : dto.email.trim().toLowerCase() || null,
+        email: dto.email === undefined ? undefined : dto.email?.trim().toLowerCase() || null,
         address: dto.address === undefined ? undefined : dto.address.trim() || null,
         notes: dto.notes === undefined ? undefined : dto.notes.trim() || null,
         isActive: dto.isActive,
